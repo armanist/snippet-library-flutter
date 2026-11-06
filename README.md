@@ -66,7 +66,7 @@ android/                         Generated Android project (not used yet)
 web/                             Generated web host page (index.html, icons)
 ```
 
-The layout follows the Vue app: `lib/snippets/` will get `contracts/` and `services/` next to `snippet_list/`. Each class has its own file, named after it in snake_case. A widget and its private `State` class are the one exception, because Dart privacy works per file.
+The layout follows the Vue app where Dart allows: `lib/snippets/` will get `models/` (data classes) and `services/` (the API client) next to `snippet_list/`. Each class has its own file, named after it in snake_case. A widget and its private `State` class are the one exception, because Dart privacy works per file.
 
 ## How it works
 
@@ -81,9 +81,9 @@ Flutter draws its own UI on a canvas instead of using HTML elements, so the page
 
 ## Roadmap
 
-- `Snippet` model and the REST data source, shared by both APIs.
+- Snippet models and the REST data source, shared by both APIs.
 - The snippet list loaded from the API, with loading, error and empty states.
+- GraphQL as a second transport, switched with one setting, as in the Vue and Angular apps.
 - Search and pagination.
 - Create, edit and delete.
 - Running on an Android emulator.
-- Optionally, GraphQL as a second transport, as in the Vue and Angular apps.
