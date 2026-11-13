@@ -24,34 +24,41 @@ class SnippetRestApi implements SnippetDataSource {
 
     final response = await http.get(url);
 
-    _throwIfFailed(response, 'Failed to load snippets');
-
-    return FindSnippetsResult.fromJson(
-      jsonDecode(response.body) as Map<String, dynamic>,
-    );
+    return FindSnippetsResult.fromJson(_dataFrom(response));
   }
 
-  void _throwIfFailed(http.Response response, String fallbackMessage) {
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return;
+  Map<String, dynamic> _dataFrom(http.Response response) {
+    final body = _decode(response.body);
+
+    if (response.statusCode < 200 ||
+        response.statusCode >= 300 ||
+        body == null) {
+      final message =
+          _messageFrom(body) ??
+          'Failed to load snippets (${response.statusCode})';
+
+      throw ApiException(message);
     }
 
-    throw ApiException(
-      _messageFrom(response) ?? '$fallbackMessage (${response.statusCode})',
-    );
+    return body;
   }
 
-  String? _messageFrom(http.Response response) {
-    try {
-      final body = jsonDecode(response.body);
-      final message = body is Map<String, dynamic> ? body['message'] : null;
+  String? _messageFrom(Map<String, dynamic>? body) {
+    final message = body?['message'];
 
-      if (message is String) return message;
-      if (message is List) return message.join('; ');
+    if (message is String) return message;
+    if (message is List) return message.join('; ');
+
+    return null;
+  }
+
+  Map<String, dynamic>? _decode(String text) {
+    try {
+      final decoded = jsonDecode(text);
+
+      return decoded is Map<String, dynamic> ? decoded : null;
     } on FormatException {
       return null;
     }
-
-    return null;
   }
 }
