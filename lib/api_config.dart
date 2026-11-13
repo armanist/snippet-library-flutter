@@ -2,3 +2,8 @@ const apiBaseUrl = String.fromEnvironment(
   'API_BASE_URL',
   defaultValue: 'http://localhost:3000',
 );
+
+const snippetTransport = String.fromEnvironment(
+  'SNIPPET_TRANSPORT',
+  defaultValue: 'rest',
+);
